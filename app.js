@@ -12,6 +12,8 @@ mongoose.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD
 
 const userRouter = require('./routes/user')
 app.use('/users', userRouter)
+const todoRouter = require('./routes/todo')
+app.use('/todolists', todoRouter)
 
 
 

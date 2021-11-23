@@ -22,35 +22,31 @@ function findAll(req, res) {
 }
 
 function register(req, res) {
-    bcrypt.hash(req.body.password, 3).then(function(hashRegister) {
-        User
-            .create({
-                fullName: req.body.fullName, 
-                email: req.body.email, 
-                password: hashRegister
-            })
-            .then(data => {
-                res.status(201).json({
-                    data,
-                    message: 'success create a new'
-                })
-            })
-            .catch(err =>{
-                console.log(err)
-                res.status(500).json({
-                message: 'internal server error'
-            })
-        })
-
-            
+    const hashRegister = bcrypt.hashSync(req.body.password, 3)
+    User
+    .create({
+        fullName: req.body.fullName, 
+        email: req.body.email, 
+        password: hashRegister
     })
-    // const hash = bcrypt.hashSync(req.body.password, 3)
+    .then(data => {
+        res.status(201).json({
+            data,
+            message: 'success create a new'
+        })
+    })
+    .catch(err =>{
+        console.log(err)
+        res.status(500).json({
+            message: 'internal server error'
+        })
+    })
 }
 
-function updateUserById(req, res) { 
-    bcrypt.hash(req.body.password, 3).then(function(hashUpdate) {
+function updateUserById(req, res) {
+    const hashUpdate = bcrypt.hashSync(req.body.password, 3)
         User
-            .findByIdAndUpdate(_id = req.params.id, {
+            .findByIdAndUpdate(req.params.id, {
                 fullName: req.body.fullName, 
                 email: req.body.email,
                 password: hashUpdate
@@ -67,13 +63,11 @@ function updateUserById(req, res) {
                 message: 'internal server error'
             })
         })
-    })
-    // const hashUpdate = bcrypt.hashSync(req.body.password, 3)
 }
 
 function deleteUserById(req, res) {
     User
-        .findByIdAndDelete(_id = req.params.id)
+        .findByIdAndDelete(req.params.id)
         .then(data =>{
             res.status(201).json({
                 message: 'success delete',
@@ -98,48 +92,25 @@ function login(req, res) {
         .then(data => {
            if (data === null) {
                res.status(404).json({
-                   message: 'email not found'
+                   message: 'email/password wrong'
                })
             }else {
-                bcrypt.compare(req.body.password, data.password).then(function(result) {
-                    if (result === false) {
-                        res.status(404).json({
-                            message: 'password not found'
-                        })
-                    } else {
-                        console.log(data)
-                        const token = jwt.sign({
-                            data}, 
-                            process.env.PRIVATE_KEY)
-                        res.status(200).json({
-                            message: 'OK success',
-                            token
-                        })
-                    }
-                })
-
-                // bcrypt.compare(req.body.password, data.password, function(err, result) {
-                //     console.log(result)
-                //     console.log(req.body.password, ' ', data.password)
-                    // if (err) {
-                    //     console.log(err)
-                    //     res.status(500).json({
-                    //         message: 'internal server error'
-                    //     })
-                    // } else if (result === false) {
-                    //     res.status(404).json({
-                    //         message: 'password not found'
-                    //     })
-                    // } else {
-                    //     const token = jwt.sign({
-                    //         data}, 
-                    //         process.env.PRIVATE_KEY)
-                    //     res.status(200).json({
-                    //         message: 'OK success',
-                    //         token
-                    //     })
-                    // }
-                // })
+                const comparePassword = bcrypt.compareSync(req.body.password, data.password)
+                if (comparePassword === false) {
+                    res.status(404).json({
+                        message: 'email/password wrong'
+                    })
+                } else {
+                    const token = jwt.sign({
+                        _id: data.id,
+                        email: data.email},
+                        process.env.PRIVATE_KEY)
+                        console.log(token)
+                    res.status(200).json({
+                        message: 'OK success',
+                        token
+                    })
+                }
             }
         })
         .catch(err => {
@@ -158,3 +129,8 @@ module.exports = {
     updateUserById,
     login
 }
+
+// todo
+// name
+// description
+// status
