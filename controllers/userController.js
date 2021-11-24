@@ -105,7 +105,6 @@ function login(req, res) {
                         _id: data.id,
                         email: data.email},
                         process.env.PRIVATE_KEY)
-                        console.log(token)
                     res.status(200).json({
                         message: 'OK success',
                         token

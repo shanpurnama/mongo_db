@@ -1,5 +1,5 @@
 
-const Todo = require('../models/todo_list')
+const Todo = require('../models/todoList')
 
 function findAll(req, res) {
     Todo
@@ -20,11 +20,12 @@ function findAll(req, res) {
 
 
 function findOne(req, res) {
-    const id = {
-        _id: req.params.id
-    }
+    // const id = {
+    //     _id: req.params.id
+    // }
     Todo
-        .findOne(id)
+        .findById(req.params.id)
+        // .findOne(id)
         .then(data => {
             res.status(201).json({
                 data,
