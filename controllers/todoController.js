@@ -1,5 +1,5 @@
 
-const Todo = require('../models/todoList')
+const Todo = require('../models/todo')
 
 function findAll(req, res) {
     Todo
@@ -20,12 +20,8 @@ function findAll(req, res) {
 
 
 function findOne(req, res) {
-    // const id = {
-    //     _id: req.params.id
-    // }
     Todo
         .findById(req.params.id)
-        // .findOne(id)
         .then(data => {
             res.status(201).json({
                 data,
@@ -40,18 +36,38 @@ function findOne(req, res) {
         })
 }
 
+function findByUserId(req, res) {
+    Todo
+        .findById(req.params.id)
+        .populate({
+            path: 'user'
+        })
+        .then(data => {
+            console.log(data)
+            res.status(200).json({
+                data,
+                message: 'success'
+            })
+        })
+        .catch(err => {
+            console.log(err)
+            res.status(500).json({
+                message: 'internal server error'
+            })
+        })
+}
 
 function create (req, res) {
     Todo
         .create({
             todoName: req.body.todoName,
             description: req.body.description,
-            status: req.body.status
+            user: req.body.user
         })
         .then(data => {
             res.status(201).json({
                 data,
-                message: 'success create to do name'
+                message: 'success create todo'
             })
         })
         .catch(err => {
@@ -111,5 +127,10 @@ module.exports = {
     create,
     findOne,
     update,
-    removeTodoList
+    removeTodoList,
+    findByUserId
 }
+
+
+// typeobjectid
+// populate

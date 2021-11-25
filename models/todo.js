@@ -5,7 +5,14 @@ const { Schema } = mongoose
 const todoSchema = new Schema({
     todoName: String,
     description: String,
-    status: Boolean
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
+    status: {
+        type: Boolean,
+        default: false
+    }
 })
 
 const Todo = mongoose.model('Todo', todoSchema)

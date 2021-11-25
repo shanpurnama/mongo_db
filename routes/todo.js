@@ -3,13 +3,16 @@
 const express = require('express')
 const router = express.Router()
 const todoController = require('../controllers/todoController')
-const { route } = require('./user')
+const verify = require('../middleware/verify')
+
 
 router.get('/findAll', todoController.findAll)
 
 router.get('/findOne/:id', todoController.findOne)
 
-router.post('/createToDoList', todoController.create)
+router.get('/findByUserId/:id', todoController.findByUserId)
+
+router.post('/create', todoController.create)
 
 router.put('/update/:id', todoController.update)
 

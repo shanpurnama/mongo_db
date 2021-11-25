@@ -20,12 +20,10 @@ function authorize (req, res, next) {
             _id: req.params.id
         }
         var decode = jwt.verify(req.headers.token, process.env.PRIVATE_KEY)
-        // console.log(decode._id, 'decode')
         User
             .findOne(id)
             .then(data => {
-                console.log(data, 'data')
-                if (data.id === decode._id) {
+                if (data && data.id === decode._id) {
                     console.log('masuk')
                     next()
                 } else {
