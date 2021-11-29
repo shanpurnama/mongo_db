@@ -38,7 +38,9 @@ function findOne(req, res) {
 
 function findByUserId(req, res) {
     Todo
-        .findById(req.params.id)
+        .find({
+            user: req.params.id
+        })
         .populate({
             path: 'user'
         })

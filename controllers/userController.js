@@ -37,9 +37,24 @@ function register(req, res) {
     })
     .catch(err =>{
         console.log(err)
-        res.status(500).json({
-            message: 'internal server error'
-        })
+
+        if (err.errors && err.errors.fullName) {
+            res.status(400).json({
+                message: err.errors.fullName.properties.message
+            })  
+        } else if (err.errors && err.errors.email) {
+            res.status(400).json({
+                message: err.errors.email.properties.message
+            })
+        } else if (err && err.code === 11000){ 
+            res.status(400).json({
+                message: 'email already used'
+            })
+        } else {
+            res.status(500).json({
+                message: 'internal server error'
+            })
+        }
     })
 }
 
@@ -128,8 +143,3 @@ module.exports = {
     updateUserById,
     login
 }
-
-// todo
-// name
-// description
-// status
