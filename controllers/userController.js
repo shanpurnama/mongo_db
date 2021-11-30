@@ -8,7 +8,7 @@ function findAll(req, res) {
     User
         .find()
         .then(data => {
-            res.status(201).json({
+            res.status(200).json({
                 data,
                 message: 'success find all'
             })
@@ -22,12 +22,11 @@ function findAll(req, res) {
 }
 
 function register(req, res) {
-    const hashRegister = bcrypt.hashSync(req.body.password, 3)
     User
     .create({
         fullName: req.body.fullName, 
         email: req.body.email, 
-        password: hashRegister
+        password: req.body.password
     })
     .then(data => {
         res.status(201).json({
@@ -36,8 +35,6 @@ function register(req, res) {
         })
     })
     .catch(err =>{
-        console.log(err)
-
         if (err.errors && err.errors.fullName) {
             res.status(400).json({
                 message: err.errors.fullName.properties.message
@@ -45,6 +42,10 @@ function register(req, res) {
         } else if (err.errors && err.errors.email) {
             res.status(400).json({
                 message: err.errors.email.properties.message
+            })
+        } else if (err.errors && err.errors.password) {
+            res.status(400).json({
+                message: err.errors.password.properties.message
             })
         } else if (err && err.code === 11000){ 
             res.status(400).json({

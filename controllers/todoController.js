@@ -62,7 +62,7 @@ function findByUserId(req, res) {
 function create (req, res) {
     Todo
         .create({
-            todoName: req.body.todoName,
+            name: req.body.todoName,
             description: req.body.description,
             user: req.body.user
         })
@@ -73,10 +73,21 @@ function create (req, res) {
             })
         })
         .catch(err => {
-            console.log(err)
-            res.status(500).json({
-                message: "internal server error"
-            })
+            // console.log(err.errors.name.properties.message)
+            // console.log(err.errors.description.properties.message)
+            if (err.errors && err.errors.name) {
+                res.status(400).json({
+                    message: err.errors.name.properties.message
+                })
+            } else if (err.errors && err.errors.description) {
+                res.status(400).json({
+                    message: err.errors.description.properties.message
+                })
+            } else {
+                res.status(500).json({
+                    message: "internal server error"
+                })
+            }
         })
 }
 

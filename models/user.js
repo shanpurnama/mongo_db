@@ -1,25 +1,35 @@
 const mongoose = require('mongoose')
+const bcrypt = require('bcrypt')
 
 const { Schema } = mongoose
 
 const userSchema = new Schema({
     fullName: {
         type: String,
-        minlength: [6, 'must containing at least 6 alphabets']
+        minlength: [6, 'full name must contain at least 6 alphabets'],
+        required: [true, 'please input your full name']
     },
     email: {
         type: String,
         unique: true,
-        validate: {
-            validator: function(email) {
-              return /\d{3}-\d{3}-\d{4}/.test(email)
+        validate : {
+            validator: function (v) {
+                const regex = /^((?!\.)[\w\-_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$/
+                return regex.test(v)
             },
-            message: 'is not valid format email'
+            message: 'invalid format email'
         },
-        required: [false, 'please input your email'],
+        required: [true, 'please input your email'],
     },
-    password: String
+    password: {
+        type: String,
+        required: [true, 'please input your password']
+    }
+})
 
+userSchema.pre('save', function() {
+    const hashRegister = bcrypt.hashSync(this.password, 3)
+    this.password = hashRegister
 })
 
 const User = mongoose.model('User', userSchema)
@@ -30,3 +40,6 @@ module.exports = User
 // regex test for email
 // validation
 // custom validator
+// hooks
+// this
+// createdDate for tod
