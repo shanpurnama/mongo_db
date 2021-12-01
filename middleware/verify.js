@@ -2,6 +2,7 @@
 
 const jwt = require('jsonwebtoken')
 const User = require('../models/user')
+const Todo = require('../models/todo')
 
 function authenticate(req, res, next) {
     try {
@@ -14,17 +15,16 @@ function authenticate(req, res, next) {
     }
 }
 
-function authorize (req, res, next) {
+function userAuthorize (req, res, next) {
     try {
-        const id = {
-            _id: req.params.id
-        }
         var decode = jwt.verify(req.headers.token, process.env.PRIVATE_KEY)
+        // console.log(decode._id)
         User
-            .findOne(id)
+            .findById(req.params.id)
             .then(data => {
-                if (data && data.id === decode._id) {
-                    console.log('masuk')
+                console.log(data._id)
+                console.log(data.id)
+                if (data && data._id.toString() === decode._id) {
                     next()
                 } else {
                     res.status(401).json({
@@ -40,7 +40,29 @@ function authorize (req, res, next) {
     }
 }
 
+function todoAuthorize(req, res, next) {
+    try {
+        var decode = jwt.verify(req.headers.token, process.env.PRIVATE_KEY)
+        Todo
+            .findById(req.params.id)
+            .then(data => {
+                if (data && data.user.toString() === decode._id) {
+                    next()
+                } else {
+                    res.status(401).json({
+                        message: 'unauthorized'
+                    })
+                }
+            })
+    } catch(err) {
+        console.log(err)
+        res.status(401).json({
+            message: 'Unauthorized'
+        })
+    }
+}
 module.exports = {
     authenticate,
-    authorize
+    userAuthorize,
+    todoAuthorize
 }

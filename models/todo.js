@@ -27,8 +27,10 @@ const todoSchema = new Schema({
 
     createdDate: {
         type: String,
-        default: new Date
     }
+})
+todoSchema.pre('save', function() {
+    this.createdDate = new Date()
 })
 
 const Todo = mongoose.model('Todo', todoSchema)

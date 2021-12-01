@@ -96,7 +96,7 @@ function update(req, res) {
     Todo
         .findByIdAndUpdate(req.params.id,
         {
-            todoName: req.body.todoName,
+            name: req.body.todoName,
             description: req.body.description,
             status: req.body.status
         })
