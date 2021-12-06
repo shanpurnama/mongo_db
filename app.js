@@ -11,9 +11,13 @@ const mongoose = require('mongoose')
 mongoose.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.kn4zw.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`)
 
 const userRouter = require('./routes/user')
-app.use('/users', userRouter)
 const todoRouter = require('./routes/todo')
+const projectRouter = require('./routes/project')
+
+
+app.use('/users', userRouter)
 app.use('/todos', todoRouter)
+app.use('/projects', projectRouter)
 
 
 

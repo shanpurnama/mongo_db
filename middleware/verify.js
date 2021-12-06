@@ -66,3 +66,6 @@ module.exports = {
     userAuthorize,
     todoAuthorize
 }
+
+// owner
+// users
