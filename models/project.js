@@ -11,12 +11,12 @@ const projectSchema = new Schema({
 
     owner: {
         type: mongoose.Schema.Types.ObjectId,
-        required: [true, 'please input your owner']
+        ref: 'User',
     },
 
     users: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'user',
+        ref: 'User',
         default: null
     }],
 })

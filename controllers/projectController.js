@@ -1,4 +1,5 @@
 const Project = require('../models/project')
+const User = require('../models/user')
 
 function create(req, res) {
     Project
@@ -15,10 +16,22 @@ function create(req, res) {
                     }
                 })
                 .then(dataOne => {
-                    console.log(dataOne)
-                    res.status(200).json({
-                        message: 'successfully'
-                    })
+                    User
+                        .findByIdAndUpdate(dataOne.owner.toString(), {
+                            $push: {
+                                projects: projectInfo._id
+                            }
+                        })
+                        .then(data => {
+                            res.status(201).json({
+                                message: 'successfully'
+                            })
+                        })
+                        .catch(err => {
+                            res.status(500).json({
+                                message: 'internal server error'
+                            })
+                        })      
                 })
         })
         .catch(err => {
@@ -30,9 +43,29 @@ function create(req, res) {
         })
 }
 
+function findAll(req, res) {
+    Project
+        .find()
+        .populate('users')
+        .populate('owner')
+        .then(resultData => {
+            res.status(200).json({
+                resultData,
+                message: 'successfully'
+            })
+        })
+        .catch(err => {
+            console.log(err)
+            res.status(500).json({
+                message: 'internal server error'
+            })
+        })
+}
+
 
 
 
 module.exports = {
-    create
+    create,
+    findAll
 }

@@ -24,7 +24,12 @@ const userSchema = new Schema({
     password: {
         type: String,
         required: [true, 'please input your password']
-    }
+    },
+    projects: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Project',
+        default: null
+    }],
 })
 
 userSchema.pre('save', function() {
