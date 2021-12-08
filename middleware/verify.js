@@ -18,12 +18,9 @@ function authenticate(req, res, next) {
 function userAuthorize (req, res, next) {
     try {
         var decode = jwt.verify(req.headers.token, process.env.PRIVATE_KEY)
-        // console.log(decode._id)
         User
             .findById(req.params.id)
             .then(data => {
-                console.log(data._id)
-                console.log(data.id)
                 if (data && data._id.toString() === decode._id) {
                     next()
                 } else {

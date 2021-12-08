@@ -5,7 +5,7 @@ function create(req, res) {
     Project
         .create({
             name: req.body.name,
-            owner: req.body.owner
+            owner: req.params.id
         })
         .then(data => {
             projectInfo = data
@@ -17,7 +17,7 @@ function create(req, res) {
                 })
                 .then(dataOne => {
                     User
-                        .findByIdAndUpdate(dataOne.owner.toString(), {
+                        .findByIdAndUpdate(dataOne.owner, {
                             $push: {
                                 projects: projectInfo._id
                             }
@@ -46,8 +46,20 @@ function create(req, res) {
 function findAll(req, res) {
     Project
         .find()
-        .populate('users')
+        // .populate('users')
+        .populate({
+            path : 'users',
+            populate : {
+              path : 'projects'
+            }
+          })
         .populate('owner')
+        .populate({
+            path : 'owner',
+            populate : {
+              path : 'projects'
+            }
+          })
         .then(resultData => {
             res.status(200).json({
                 resultData,
@@ -69,3 +81,6 @@ module.exports = {
     create,
     findAll
 }
+
+
+// deep populate
